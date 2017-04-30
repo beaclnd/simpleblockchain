@@ -21,15 +21,15 @@ import (
 	"time"
 )
 
-var MY_HTTP_PORT = os.Args[1]
-var MY_P2P_PORT = os.Args[2]
+var MY_HTTP_PORT string
+var MY_P2P_PORT string
 
 const VERSION = "0.1"
 
-// Neighboring peers whose identities are their respective address IP:PORT.
+// To store neighboring peers whose identities are their respective tcp addressess.
 var listPeers map[string]bool = make(map[string]bool)
 
-// A simple data struct of Block, without any transaction data.
+// A simple data struct of Block, without any transactions data.
 type Block struct {
 	Version           string
 	PreviousBlockHash string
@@ -103,6 +103,13 @@ func initHttpServer() {
 	http.HandleFunc("/mineNewBlock", mineNewBlock)
 	http.HandleFunc("/getBlockChain", getBlockChain)
 
+    MY_HTTP_PORT = "9090"
+    if http_port := os.Getenv("HTTP_PORT"); http_port != "" {
+        MY_HTTP_PORT = http_port
+    }
+    if len(os.Args) > 1 {
+       MY_HTTP_PORT = os.Args[1]
+    }
 	log.Printf("Http server started on :%s", MY_HTTP_PORT)
 
 	var addr string
@@ -146,6 +153,13 @@ func addPeer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("A client calls http server to add a peer with address: %s", peer.Address)
+
+	_, err = net.ResolveTCPAddr("tcp4", peer.Address)
+    if err != nil {
+        log.Printf("Reveived wrong tcp address: %s", peer.Address)
+        w.Write([]byte("Wrong tcp address!"))
+        return
+    }
 
 	listPeers[peer.Address] = true
 	log.Printf("Updated my peer list: %v\n", listPeers)
@@ -233,6 +247,15 @@ func getMyAddress() (addr string) {
 	handleErr(err)
 	address, err := net.ResolveIPAddr("ip", name)
 	handleErr(err)
+
+    MY_P2P_PORT = "7676"
+    if p2p_port := os.Getenv("P2P_PORT"); p2p_port != "" {
+        MY_P2P_PORT = p2p_port
+    }
+    if len(os.Args) > 2 {
+        MY_P2P_PORT = os.Args[2]
+    }
+
 	addr = address.String() + ":" + MY_P2P_PORT
 	return
 }
