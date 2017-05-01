@@ -156,7 +156,7 @@ func addPeer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	listPeers[ip] = true
+	listPeers[ip.String()] = true
 	log.Printf("Updated my peer list: %v\n", listPeers)
 
 	msg := new(Message)
