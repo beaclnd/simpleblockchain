@@ -103,10 +103,10 @@ func initHttpServer() {
 	http.HandleFunc("/mineNewBlock", mineNewBlock)
 	http.HandleFunc("/getBlockChain", getBlockChain)
 
-    MY_HTTP_PORT = "9090"
-    if http_port := os.Getenv("HTTP_PORT"); http_port != "" {
-        MY_HTTP_PORT = http_port
-    }
+	MY_HTTP_PORT = "9090"
+	if http_port := os.Getenv("HTTP_PORT"); http_port != "" {
+		MY_HTTP_PORT = http_port
+	}
 	log.Printf("Http server started on :%s", MY_HTTP_PORT)
 
 	var addr string
@@ -115,10 +115,10 @@ func initHttpServer() {
 }
 
 func initP2PServer() {
-    MY_P2P_PORT = "7676"
-    if p2p_port := os.Getenv("P2P_PORT"); p2p_port != "" {
-        MY_P2P_PORT = p2p_port
-    }
+	MY_P2P_PORT = "7676"
+	if p2p_port := os.Getenv("P2P_PORT"); p2p_port != "" {
+		MY_P2P_PORT = p2p_port
+	}
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", getMyAddress())
 	handleErr(err)
@@ -157,11 +157,11 @@ func addPeer(w http.ResponseWriter, r *http.Request) {
 	log.Printf("A client calls http server to add a peer with address: %s", peer.Address)
 
 	_, err = net.ResolveTCPAddr("tcp4", peer.Address)
-    if err != nil {
-        log.Printf("Reveived wrong tcp address: %s", peer.Address)
-        w.Write([]byte("Wrong tcp address!"))
-        return
-    }
+	if err != nil {
+		log.Printf("Reveived wrong tcp address: %s", peer.Address)
+		w.Write([]byte("Wrong tcp address!"))
+		return
+	}
 
 	listPeers[peer.Address] = true
 	log.Printf("Updated my peer list: %v\n", listPeers)
@@ -176,10 +176,11 @@ func addPeer(w http.ResponseWriter, r *http.Request) {
 }
 
 func getPeers(w http.ResponseWriter, r *http.Request) {
-	listpeers_bytes, err := json.Marshal(listPeers)
+	listpeers_bytes, err := json.MarshalIndent(listPeers, "", "    ")
 	handleErr(err)
 	w.Header().Set("Content-type", "application/json; charset=utf-8")
 	w.Write(listpeers_bytes)
+	w.Write([]byte("\n"))
 }
 
 // Not to actually mine a block like bitcoin core, just to simulate a mining process.
@@ -238,10 +239,11 @@ func getBlockChain(w http.ResponseWriter, r *http.Request) {
 	}
 	rwMutex.RUnlock()
 
-	blockchain_bytes, err := json.Marshal(show_blocks)
+	blockchain_bytes, err := json.MarshalIndent(show_blocks, "", "    ")
 	handleErr(err)
 	w.Header().Set("Content-type", "application/json; charset=utf-8")
 	w.Write(blockchain_bytes)
+	w.Write([]byte("\n"))
 }
 
 func getMyAddress() (addr string) {
@@ -312,9 +314,9 @@ func receive(conn net.Conn) {
 
 func send(msg *Message) {
 	conn := createConnection(msg.To)
-    if conn == nil {
-        return
-    }
+	if conn == nil {
+		return
+	}
 	enc := json.NewEncoder(conn)
 	enc.Encode(msg)
 	log.Printf("Sent a p2p message: \n%v", *msg)
