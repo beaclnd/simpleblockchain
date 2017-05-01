@@ -10,11 +10,10 @@ The program provids a http server for clients to interact with, offering http re
 Utilizing tcp sockets, the program builds a simple P2P network, where peers can send or receive p2p messages to or from their respective neighbor peers. 
 
 ## functionalities
-A peer can manually dicsovery a peer through a client's http request.
-A client can get the peer list held by a peer.
-A peer can create a new block based on the current blockchain state, through a client's http request.
+A peer can manually dicsovery a peer through a client's http request.<br>
+A client can get the peer list held by a peer.<br>
+A peer can create a new block based on the current blockchain state, through a client's http request.<br>
 A client can get the blockchain state of any peer.
-
 All peers's blockchain data can keep same state eventually.
 
 ## notes
