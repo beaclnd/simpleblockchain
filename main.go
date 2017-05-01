@@ -107,9 +107,6 @@ func initHttpServer() {
     if http_port := os.Getenv("HTTP_PORT"); http_port != "" {
         MY_HTTP_PORT = http_port
     }
-    if len(os.Args) > 1 {
-       MY_HTTP_PORT = os.Args[1]
-    }
 	log.Printf("Http server started on :%s", MY_HTTP_PORT)
 
 	var addr string
@@ -118,6 +115,11 @@ func initHttpServer() {
 }
 
 func initP2PServer() {
+    MY_P2P_PORT = "7676"
+    if p2p_port := os.Getenv("P2P_PORT"); p2p_port != "" {
+        MY_P2P_PORT = p2p_port
+    }
+
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", getMyAddress())
 	handleErr(err)
 	listener, err := net.ListenTCP("tcp", tcpAddr)
@@ -248,14 +250,6 @@ func getMyAddress() (addr string) {
 	address, err := net.ResolveIPAddr("ip", name)
 	handleErr(err)
 
-    MY_P2P_PORT = "7676"
-    if p2p_port := os.Getenv("P2P_PORT"); p2p_port != "" {
-        MY_P2P_PORT = p2p_port
-    }
-    if len(os.Args) > 2 {
-        MY_P2P_PORT = os.Args[2]
-    }
-
 	addr = address.String() + ":" + MY_P2P_PORT
 	return
 }
@@ -318,6 +312,9 @@ func receive(conn net.Conn) {
 
 func send(msg *Message) {
 	conn := createConnection(msg.To)
+    if conn == nil {
+        return
+    }
 	enc := json.NewEncoder(conn)
 	enc.Encode(msg)
 	log.Printf("Sent a p2p message: \n%v", *msg)
