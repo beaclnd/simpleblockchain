@@ -1,10 +1,3 @@
-// An extremely simple blockchain implementation based on golang,
-// provides some limited functionalities, ignoring transaction data, practical consensus protocol, persistent storage
-// and so on, which ought to be included into a practical blockchain platform.
-// =========================================================================================
-// This program provids a http server for clients to interact with, offering http interfaces
-// addPeer, getPeers, mineNewBlock and getBlockChain.
-// With these http interfaces, clients can interact with a peer in a blockchain network.
 package main
 
 import (
