@@ -149,14 +149,14 @@ func addPeer(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("A client calls http server to add a peer with address: %s", peer.Address)
 
-	_, err = net.ResolveTCPAddr("tcp4", peer.Address)
+	ip, err := net.ResolveTCPAddr("tcp4", peer.Address)
 	if err != nil {
 		log.Printf("Reveived wrong tcp address: %s", peer.Address)
 		w.Write([]byte("Wrong tcp address!"))
 		return
 	}
 
-	listPeers[peer.Address] = true
+	listPeers[ip] = true
 	log.Printf("Updated my peer list: %v\n", listPeers)
 
 	msg := new(Message)
