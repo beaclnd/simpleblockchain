@@ -1,5 +1,5 @@
 # SimpleBlockChain
-It's an extremely simple and naive blockchain implementation based on golang, providing some limited functionalities ignoring transaction data, practical consensus protocol, persistent storage and so on, which ought to be included into a practical blockchain platform. However, I think it's benefit for someone at least myselft to learn blockchain.
+It's an extremely simple and naive [*blockchain*](https://en.wikipedia.org/wiki/Blockchain) implementation based on golang, providing some limited functionalities ignoring transaction data, practical consensus protocol, persistent storage and so on, which ought to be included into a practical blockchain platform. However, I think it's benefit for someone at least myselft to learn blockchain.
 
 ## Structure
 http server + p2p server
